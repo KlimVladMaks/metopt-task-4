@@ -96,23 +96,27 @@ def calc_math_exp(Sps, k, V=None):
     math_exp = None
 
     if V is not None:
-        S_positive = Sps[0][0]
-        p_positive = Sps[0][1]
-        positive_value = V[k][S_positive]
+        try:
+            S_positive = Sps[0][0]
+            p_positive = Sps[0][1]
+            positive_value = V[k][S_positive][1]
 
-        S_neutral = Sps[1][0]
-        p_neutral = Sps[1][1]
-        neutral_value = V[k][S_neutral]
+            S_neutral = Sps[1][0]
+            p_neutral = Sps[1][1]
+            neutral_value = V[k][S_neutral][1]
 
-        S_negative = Sps[2][0]
-        p_negative = Sps[2][1]
-        negative_value = V[k][S_negative]
-    
-        math_exp = (
-            (positive_value * p_positive)
-            + (neutral_value * p_neutral)
-            + (negative_value * p_negative)
-        )
+            S_negative = Sps[2][0]
+            p_negative = Sps[2][1]
+            negative_value = V[k][S_negative][1]
+        
+            math_exp = (
+                (positive_value * p_positive)
+                + (neutral_value * p_neutral)
+                + (negative_value * p_negative)
+            )
+        
+        except:
+            return -float('inf')
     
     else:
         S_positive = Sps[0][0]
@@ -175,19 +179,19 @@ def discretize_Sps(Sps, DCs):
 def solve():
     V = {}
 
-    K3_CB1 = (30, 1900, 25)
-    K3_CB2 = (150, 1900, 200)
-    K3_DEP = (100, 1900, 100)
-    K3_SDS = (0, 1900, 100)
+    K3_CB1 = (30, 1000, 100)
+    K3_CB2 = (150, 1000, 100)
+    K3_DEP = (100, 1000, 100)
+    K3_SDS = (0, 1000, 100)
 
     K3_X1 = (-5, 5)
     K3_X2 = (-5, 5)
     K3_X3 = (-5, 5)
 
-    K2_CB1 = (30, 1900, 25)
-    K2_CB2 = (150, 1900, 200)
-    K2_DEP = (100, 1900, 100)
-    K2_SDS = (0, 1900, 100)
+    K2_CB1 = (30, 1000, 100)
+    K2_CB2 = (150, 1000, 100)
+    K2_DEP = (100, 1000, 100)
+    K2_SDS = (0, 1000, 100)
 
     K2_X1 = (-5, 5)
     K2_X2 = (-5, 5)
@@ -228,7 +232,6 @@ def solve():
         for x3 in x3s:
             if is_x_valid(S3, x3, 3):
                 S4ps = T(S3, x3, 3)
-                # S4ps = discretize_Sps(S4ps, DCS)
                 math_exp = calc_math_exp(S4ps, 4)
                 if math_exp > max_value:
                     optimal_x = x3
@@ -267,7 +270,7 @@ def solve():
             if is_x_valid(S2, x2, 2):
                 S3ps = T(S2, x2, 2)
                 S3ps = discretize_Sps(S3ps, DCS)
-                math_exp = calc_math_exp(S3ps, 3)
+                math_exp = calc_math_exp(S3ps, 3, V)
                 if math_exp > max_value:
                     optimal_x = x2
                     max_value = math_exp
@@ -296,7 +299,7 @@ def solve():
         if is_x_valid(S1, x1, 1):
             S2ps = T(S1, x1, 1)
             S2ps = discretize_Sps(S2ps, DCS)
-            math_exp = calc_math_exp(S2ps, 2)
+            math_exp = calc_math_exp(S2ps, 2, V)
             if math_exp > max_value:
                 optimal_x = x1
                 max_value = math_exp
