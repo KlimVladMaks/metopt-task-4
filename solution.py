@@ -42,6 +42,12 @@ def T_w(S, k):
         S_after_w[i] *= w_k[k][i]
 
 
+def T(S, x, k):
+    S_after_x = T_x(S.copy(), x)
+    S_after_w = T_w(S_after_x, k)
+    return S_after_w
+
+
 def is_S_valid(S):
     return all(S[i] >= S_min[i] for i in range(4))
 
@@ -56,9 +62,37 @@ def is_x_valid(S, x, k):
     return True
 
 
+def discretize_S(S):
+    DC = (10, 10, 10, 10)
+    discretized = S.copy()
+    for i in range(4):
+        discretized[i] = round(S[i] / DC[i]) * DC[i]
+    return discretized
+
+
+def solve():
+    DS = 100
+    LOWER_VALUE_LIMITS_3 = (30, 150, 100, 0)
+    UPPER_VALUE_LIMITS_3 = (1000, 1000, 1000, 1000)
+
+    S3s = []
+
+    for cb1 in range(LOWER_VALUE_LIMITS_3[0], UPPER_VALUE_LIMITS_3[0], DS):
+        for cb2 in range(LOWER_VALUE_LIMITS_3[1], UPPER_VALUE_LIMITS_3[1], DS):
+            for dep in range(LOWER_VALUE_LIMITS_3[2], UPPER_VALUE_LIMITS_3[2], DS):
+                for sds in range(LOWER_VALUE_LIMITS_3[3], UPPER_VALUE_LIMITS_3[3], DS):
+                    S3s.append((cb1, cb2, dep, sds))
+    
+    for S3 in S3s:
+        for x1 in range(0, 10):
+            for x2 in range(0, 10):
+                for x3 in range(0, 10):
+                    print(x1)
+
+
 def main():
     pass
 
 
 if __name__ == "__main__":
-    main()
+    solve()
